@@ -9,7 +9,8 @@ const drawDonutCharts = (data) => {
     .attr("transform", `translate(${margin.left},                  
       ${margin.top})`);
 
-  const years = [1975, 1995, 2013];
+  const years = [1997, 2005, 2013];
+  
   const formats = data.columns.filter(format => format !== "year");
 
   years.forEach(year => {
@@ -21,7 +22,7 @@ const drawDonutCharts = (data) => {
     const yearData = data.find(d => d.year === year);
     const formattedData = [];
 
-    // Each sale for the type (streaming, cassette, etc.) is added to the formattedData array
+    // Box office for each movie genre (action, comedy, etc.) is added to the formattedData array
     formats.forEach(format => {
       formattedData.push({
         format: format,
