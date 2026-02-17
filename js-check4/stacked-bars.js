@@ -1,6 +1,32 @@
 const drawStackedBars = (data) => {
   // Generate the stacked bar chart here
 
+  // Get all unique years
+  const years = [...new Set(data.map(d => d.year))].sort((a, b) => a - b);
+  
+  // Transform data for each year
+  const transformedData = [];
+  years.forEach(year => {
+    const yearObj = { year: year };
+    
+    // Filter data for this year
+    const yearData = data.filter(d => d.year === year);
+    
+    // Sum up gross revenue by genre
+    const genreGross = {};
+    yearData.forEach(d => {
+      const genre = d.genre.toLowerCase();
+      genreGross[genre] = d.gross;
+    });
+    
+    // Add genre gross to yearObj
+    for (let genre in genreGross) {
+      yearObj[genre] = genreGross[genre];
+    }
+    
+    transformedData.push(yearObj);
+  });
+
 
   /*******************************/
   /*    Append the containers    */
@@ -18,7 +44,7 @@ const drawStackedBars = (data) => {
   .order(d3.stackOrderDescending)
   .offset(d3.stackOffsetExpand);
 
-  const annotatedData = stackGenerator(data);
+  const annotatedData = stackGenerator(transformedData);
 
   const minLowerBoundaries = [];  
 const maxUpperBoundaries = []; 
@@ -53,7 +79,7 @@ const yScale = d3.scaleLinear()
 });
 
 const bottomAxis = d3.axisBottom(xScale)  
-  .tickValues(d3.range(1975, 2020, 5))   
+  .tickValues(d3.range(1995, 2020, 5))   
   .tickSizeOuter(0);                    
 
 innerChart                                              

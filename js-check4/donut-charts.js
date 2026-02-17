@@ -8,6 +8,18 @@ const drawDonutCharts = (data) => {
     .append("g")
     .attr("transform", `translate(${margin.left},                  
       ${margin.top})`);
+  
+  const leftAxisLabel = svg
+    .append("text")
+    .attr("dominant-baseline", "hanging");
+
+  leftAxisLabel
+    .append("tspan")
+    .text("Gross Revenue by Genre")
+    .attr("y", margin.top - 10)
+    .style("font-size", "16px")
+    .style("font-weight", 500);
+
 
   const years = [1997, 2005, 2013];
   
@@ -18,17 +30,27 @@ const drawDonutCharts = (data) => {
     const donutContainer = donutContainers
       .append("g")
       .attr("transform", `translate(${xScale(year)}, ${innerHeight / 2})`);
-    // Finds a row for the particular year 
-    const yearData = data.find(d => d.year === year);
-    const formattedData = [];
-
-    // Box office for each movie genre (action, comedy, etc.) is added to the formattedData array
-    formats.forEach(format => {
-      formattedData.push({
-        format: format,
-        sales: yearData[format]
-      });
+    // Filter data for the specific year
+    const yearData = data.filter(d => d.year === year);
+    
+    // Create an object to store gross revenue by genre
+    const genreGross = {};
+    
+    // Loop through each row and sum up gross revenue by genre
+    yearData.forEach(d => {
+      const genre = d.genre.toLowerCase();
+      genreGross[genre] = d.gross;
     });
+    
+    // Convert to array format for pie chart
+    const formattedData = [];
+    for (let genre in genreGross) {
+      formattedData.push({
+        format: genre,
+        sales: genreGross[genre]
+      });
+    }
+    
     console.log(formattedData);
 
     const pieGenerator = d3.pie()
@@ -87,9 +109,11 @@ const drawDonutCharts = (data) => {
           .attr("dominant-baseline", "middle")
           .style("font-size", "24px")
           .style("font-weight", 500);
-
+      
+        
   });
-
+  
+  
 
 
 };
